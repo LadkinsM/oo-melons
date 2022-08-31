@@ -1,5 +1,5 @@
 from random import choice
-from datetime import datetime
+from datetime import datetime, time
 
 """Classes for melon orders."""
 
@@ -13,20 +13,22 @@ class AbstractMelonOrder:
         self.base_price = 0
         # self.country_code = country_code
 
+        if self.qty > 100: 
+            raise TooManyMelonsError("You've ordered too many melons.")
+
     def get_base_price(self):
 
         current_day = datetime.now().weekday()
         current_time = datetime.now().time()
-        # no = today_day.weekday()
+        rush_time_start = time(8,0,0,000000)
+        rush_time_end = time(11,0,0,000000)
 
-        print(type(current_day))
-        print(type(current_time))
+        rush_time = rush_time_start < current_time < rush_time_end
 
-        if current_day in range(0, 6) and current_time in range(8, 8):
-            print("Date is Weekday")
-        # else:  
-
-        self.base_price = choice(range(5, 10))
+        self.base_price = choice(range(5, 10)) 
+       
+        if current_day in range(0, 6) and rush_time:
+            self.base_price = self.base_price + 4
 
         return self.base_price
 
@@ -51,8 +53,6 @@ class AbstractMelonOrder:
         self.shipped = True
 
 
-
-    
 class DomesticMelonOrder(AbstractMelonOrder):
     """A melon order within the USA."""
 
@@ -99,15 +99,6 @@ class GovernmentMelonOrder(AbstractMelonOrder):
 
         passed_inspection = True
 
-
-# (self, species, qty, country_code = None):
-
-
-# >>> class Polygon(object):
-# ...     def __init__(self, id):
-# ...         self.id = id
-# ...
-# >>> class Rectangle(Polygon):
-# ...     def __init__(self, id, width, height):
-# ...         super(self.__class__, self).__init__(id)
-# ...         self.shape = (width, height)
+class TooManyMelonsError(ValueError):
+    pass
+    
