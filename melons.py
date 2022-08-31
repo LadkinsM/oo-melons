@@ -19,7 +19,7 @@ class AbstractMelonOrder:
     def get_base_price(self):
 
         current_day = datetime.now().weekday()
-        current_time = datetime.now().time()
+        current_time = datetime.now().time() #can also use datetime.now().hour, check if pulls as integer or string. Allows you to assigned rush_time as integers.
         rush_time_start = time(8,0,0,000000)
         rush_time_end = time(11,0,0,000000)
 
@@ -35,12 +35,12 @@ class AbstractMelonOrder:
     def get_total(self):
         """Calculate price, including tax."""
         
-        total = 0
+        base = self.get_base_price()
 
         if self.species == 'Christmas Melon':
-            total = (1 + self.tax) * self.qty * (self.get_base_price() * 1.5)
-        else: 
-            total = (1 + self.tax) * self.qty * self.get_base_price()
+            base = (base * 1.5)
+
+        total = (1 + self.tax) * self.qty * base
 
         # if self.qty < 10 and self.country_code != None:
         #     total = total + 3
